@@ -7,13 +7,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.newsapp.data.Article
 import com.example.newsapp.data.NewsResponse
 import com.example.newsapp.data.Source
+import com.example.newsapp.database.ArticleDao
 import com.example.newsapp.database.getDatabase
 import com.example.newsapp.repository.NewsRepository
 import com.example.newsapp.utils.Resource
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.lang.IllegalArgumentException
@@ -58,26 +61,22 @@ class NewsViewModel(
         return Resource.Error(response.message())
     }
 
-    var lOf = listOf(
-        Article(
-            author =	"Thomas Barrabi",
-            content	= "Teslas long-delayed Cybertruck is expected to finally hit the market this fall, but Elon Musk faces a tough road convincing Wall Street that the futuristic pickup is more than just a gimmick.\r\nMusk p… [+7130 chars]",
-            description	= "Key details about the Cybertruck -- including its price and final specs -- remain unknown.",
-            publishedAt ="2023-08-27T14:33:03Z",
-            source = Source(
-                id = "",
-                name = "NYPost"
-            ),
-            title = "Elon Musk’s futuristic Cybertruck nears debut as Tesla aims to win over skeptics",
-            url	 = "https://nypost.com/2023/08/27/elon-musks-futuristic-cybertruck-nears-debut-as-tesla-aims-to-win-over-skeptics",
-            urlToImage	="https://nypost.com/wp-content/uploads/sites/2/2023/08/newspress-collage-vi4dvdz5i-1693146520451.jpg?quality=75&strip=all&1693132242&w=1024",
-        )
-
-    )
-
-    init {
-        newsRepository.printer()
+    fun addToSaved(article: Article){
+        viewModelScope.launch {
+            newsRepository.addToSavedNews(article)
+        }
     }
+
+    fun getSavedNews(): LiveData<List<Article>> {
+        return newsRepository.getSavedArticles().asLiveData()
+    }
+
+    fun deleteSavedNews(article: Article){
+        viewModelScope.launch {
+            newsRepository.deleteSavedNews(article)
+        }
+    }
+
     class Factory (
         val application: Application
     ): ViewModelProvider.Factory {

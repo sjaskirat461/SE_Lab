@@ -18,14 +18,6 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"
             app:popUpToInclusive="false" />
-        <action
-            android:id="@+id/action_breakingNewsFragment_to_favouriteNewsFragment"
-            app:destination="@id/favouriteNewsFragment"
-            app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_breakingNewsFragment_to_searchFragment"
-            app:destination="@id/searchFragment"
-            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/favouriteNewsFragment"
@@ -39,14 +31,6 @@
             app:exitAnim="@anim/slide_out_right"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
-        <action
-            android:id="@+id/action_favouriteNewsFragment_to_searchFragment"
-            app:destination="@id/searchFragment"
-            app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_favouriteNewsFragment_to_breakingNewsFragment"
-            app:destination="@id/breakingNewsFragment"
-            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
@@ -56,14 +40,6 @@
         <action
             android:id="@+id/action_searchFragment_to_singleNewsFragment"
             app:destination="@id/singleNewsFragment" />
-        <action
-            android:id="@+id/action_searchFragment_to_breakingNewsFragment"
-            app:destination="@id/breakingNewsFragment"
-            app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_searchFragment_to_favouriteNewsFragment"
-            app:destination="@id/favouriteNewsFragment"
-            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/singleNewsFragment"
@@ -80,7 +56,8 @@
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_singleNewsFragment_to_breakingNewsFragment"
-            app:destination="@id/breakingNewsFragment" />
+            app:destination="@id/breakingNewsFragment"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_singleNewsFragment_to_searchFragment"
             app:destination="@id/searchFragment"

@@ -17,6 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
+
             >
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -36,14 +37,12 @@
                     />
 
                 <androidx.appcompat.widget.Toolbar
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
                     android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
                     app:layout_collapseMode="pin"
-                    app:title="@{viewModel.currentNews.title}"
-                    app:titleMargin="5dp"
-                    app:titleTextColor="@color/black"
-                    />
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 
         </com.google.android.material.appbar.AppBarLayout>
@@ -53,6 +52,20 @@
             android:layout_height="match_parent"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
             >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.currentNews.title}"
+                tools:text="Title"
+                android:textSize="30sp"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline2"
+                android:padding="25dp"
+                android:textColor="#FFFFFF"
+                />
 
             <TextView
                 android:layout_width="match_parent"
@@ -60,8 +73,11 @@
                 android:text="@{viewModel.currentNews.description}"
                 tools:text="kfubgkrwgnb"
                 android:padding="15dp"
-                android:textAppearance="@style/SingleView.AllText"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:textColor="#BFFFFFFF"
+
                 />
+            </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
 

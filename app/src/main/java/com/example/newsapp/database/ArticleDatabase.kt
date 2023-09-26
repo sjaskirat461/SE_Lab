@@ -11,9 +11,7 @@ import com.example.newsapp.data.Article
 @Database(entities = [Article::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class ArticleDatabase : RoomDatabase(){
-
     abstract fun getArticleDao() :ArticleDao
-
 
 }
 

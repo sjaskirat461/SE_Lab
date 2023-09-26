@@ -43,10 +43,16 @@ class BreakingNewsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = RecyclerViewAdapter{article ->
-            viewModel.setTheCurrentNews(article)
-            findNavController().navigate(R.id.action_breakingNewsFragment_to_singleNewsFragment)
-        }
+        val adapter = RecyclerViewAdapter(
+            { article ->
+                viewModel.setTheCurrentNews(article)
+                findNavController().navigate(R.id.action_breakingNewsFragment_to_singleNewsFragment)
+            },
+            { article ->
+                Log.d("Chala", "long ho gaya")
+                viewModel.addToSaved(article)
+            }
+        )
 
         binding.rvBreakingNews.adapter = adapter
 
@@ -91,7 +97,8 @@ class BreakingNewsFragment : Fragment() {
 
 
 class RecyclerViewAdapter(
-    val navig: (article: Article) -> Unit
+    val navig: (article: Article) -> Unit,
+    val newAddder: (article: Article) -> Unit
 ): ListAdapter<Article, RecyclerViewAdapter.RecyclerViewHolder>(DiffCallback) {
 
     inner class RecyclerViewHolder(
@@ -131,6 +138,10 @@ class RecyclerViewAdapter(
         holder.bind(item)
         holder.itemView.setOnClickListener {
             navig(item)
+        }
+        holder.itemView.setOnLongClickListener{
+            newAddder(item)
+            true
         }
     }
 

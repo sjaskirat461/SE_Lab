@@ -30,15 +30,7 @@ class SingleNewsFragment : Fragment() {
         )
         binding.viewModel = viewModel
         binding.executePendingBindings()
-        Log.d("Bhosda","Inside SingleNews ${viewModel.currentNews}")
         return binding.root
     }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-
-    }
-
 
 }

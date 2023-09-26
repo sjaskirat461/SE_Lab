@@ -2,6 +2,7 @@ package com.example.newsapp.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -19,6 +20,7 @@ import com.example.newsapp.viewmodels.NewsViewModel
 
 class MainActivity : AppCompatActivity() {
     private var _binding: ActivityMainBinding? = null
+
     private val binding get() = _binding!!
     private val viewModel: NewsViewModel by lazy {
         val activity = requireNotNull(this){
@@ -31,43 +33,16 @@ class MainActivity : AppCompatActivity() {
             )
         )[NewsViewModel::class.java]
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = DataBindingUtil.setContentView(this@MainActivity, R.layout.activity_main)
         binding.bottomNavigationView.background = null
-        binding.bottomNavigationView.menu.getItem(1).isEnabled = false
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.main_host_fr) as NavHostFragment
         val navController = navHostFragment.navController
 
         binding.bottomNavigationView.setupWithNavController(navController)
-
-        binding.bottomNavigationView.setOnItemSelectedListener {
-            when(it.itemId){
-                (R.id.breakingNewsFragment) -> {
-                    navController.popBackStack()
-                    navController.navigate(R.id.breakingNewsFragment)
-                    true
-                }
-                (R.id.favouriteNewsFragment) -> {
-                    navController.popBackStack()
-                    navController.navigate(R.id.favouriteNewsFragment)
-                    true
-                }
-                else -> false
-            }
-        }
-
-        binding.searchFab?.setOnClickListener {
-            navController.popBackStack()
-            navController.navigate(R.id.searchFragment)
-//            val fragment = SearchFragment()
-//            supportFragmentManager.commit {
-//                replace(R.id.main_host_fr, fragment)
-//                addToBackStack("search")
-//            }
-        }
-
     }
 
     override fun onDestroy() {
