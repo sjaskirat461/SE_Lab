@@ -54,6 +54,11 @@ class SignInActivity : AppCompatActivity() {
         }
     }
 
+    fun goToSignUpActivity(){
+        val intent = Intent(this, SignUpActivity::class.java)
+        startActivity(intent)
+    }
+
     override fun onStart() {
         super.onStart()
         if(firebaseAuth.currentUser!=null){
