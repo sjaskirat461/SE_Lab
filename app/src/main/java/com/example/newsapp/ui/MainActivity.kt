@@ -3,6 +3,7 @@ package com.example.newsapp.ui
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -48,5 +49,9 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    fun showToasters(message: String){
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

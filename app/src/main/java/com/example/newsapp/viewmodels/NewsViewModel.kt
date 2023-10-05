@@ -12,10 +12,18 @@ import androidx.lifecycle.viewModelScope
 import com.example.newsapp.data.Article
 import com.example.newsapp.data.NewsResponse
 import com.example.newsapp.data.Source
+import com.example.newsapp.data.fromMapGetArticle
 import com.example.newsapp.database.ArticleDao
 import com.example.newsapp.database.getDatabase
 import com.example.newsapp.repository.NewsRepository
 import com.example.newsapp.utils.Resource
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import retrofit2.Response
@@ -26,63 +34,134 @@ class NewsViewModel(
 ) : AndroidViewModel(application) {
 
     private val newsRepository = NewsRepository(getDatabase(application))
-
-    private val _breakingNews : MutableLiveData<Resource<NewsResponse>> = MutableLiveData()
-    val breakingNews: LiveData<Resource<NewsResponse>> = _breakingNews
+    private val _breakingNews: MutableLiveData<List<Article>> = MutableLiveData()
+    val breakingNews: LiveData<List<Article>> = _breakingNews
 
     var breakingNewsPage = 1
-
-    var currentNews :Article? = null
+    val hasError = MutableLiveData(false)
+    val isLoading = MutableLiveData(false)
+    var currentNews: Article? = null
+    private val db = FirebaseFirestore.getInstance()
+    private val auth = FirebaseAuth.getInstance()
 
     init {
-        Log.d("Bhosda", "getting breaking news")
         getBreakingNews("us")
     }
 
-    fun setTheCurrentNews(article: Article){
+    private fun uidFirebase(): String {
+        return auth.currentUser?.uid ?: "0000000000000"
+    }
+
+    fun setTheCurrentNews(article: Article) {
         currentNews = article
-        Log.d("Bhosda", "$article $currentNews")
     }
 
-    fun getBreakingNews(countryCode: String){
+    fun getBreakingNews(countryCode: String) {
         viewModelScope.launch {
-            _breakingNews.postValue(Resource.Loading())
-            val response = newsRepository.getBreakingNews(countryCode, breakingNewsPage)
-            _breakingNews.postValue(handleBreakingNewsResponse(response))
-        }
-    }
-
-    private fun handleBreakingNewsResponse(response: Response<NewsResponse>) : Resource<NewsResponse>{
-        if (response.isSuccessful){
-            response.body()?.let {resultResponse ->
-                return Resource.Success(resultResponse)
+            isLoading.postValue(true)
+            try {
+                val response = newsRepository.getBreakingNews(countryCode, breakingNewsPage)
+                handleBreakingNewsResponse(response)
+                hasError.postValue(false)
+                isLoading.postValue(false)
+            } catch (e: Exception) {
+                hasError.postValue(true)
             }
         }
-        return Resource.Error(response.message())
     }
 
-    fun addToSaved(article: Article){
+    private fun handleBreakingNewsResponse(response: Response<NewsResponse>) {
+        if (response.isSuccessful) {
+            breakingNewsPage++
+            response.body()?.let { resultResponse ->
+                Resource.Success(resultResponse).data?.let { newsResponse ->
+                    newsResponse.articles.let { articles ->
+                        val oldResponse: MutableList<Article> = mutableListOf()
+                        breakingNews.value?.let { oldResponse.addAll(it) }
+                        oldResponse.addAll(
+                            articles.filterNot { article ->
+                                article.urlToImage.isNullOrEmpty() || article.url.isNullOrEmpty()
+                            }
+                        )
+                        _breakingNews.postValue(oldResponse.toList())
+                    }
+                }
+                hasError.postValue(false)
+            }
+        } else {
+            hasError.postValue(true)
+        }
+    }
+
+    fun addToSaved(article: Article) {
+        Log.d("Bhosda", "Adding ${article} to saved news")
+        db.document("users/${uidFirebase()}")
+            .collection("articles")
+            .add(article)
+            .addOnSuccessListener {
+                viewModelScope.launch {
+                    newsRepository.addToSavedNews(
+                        Article(
+                            id = article.id,
+                            author = article.author,
+                            content = article.content,
+                            description = article.description,
+                            publishedAt = article.publishedAt,
+                            source = Source(
+                                id = it.id,
+                                name = article.source.name
+                            ),
+                            title = article.title,
+                            url = article.url,
+                            urlToImage = article.urlToImage,
+                        )
+                    )
+                }
+                OnSuccessListener<DocumentReference> { Log.d("Randi", "Added Successfully") }
+            }
+            .addOnFailureListener{
+                OnFailureListener { Log.d("Randi", "We Fucked Up") }
+            }
+
         viewModelScope.launch {
             newsRepository.addToSavedNews(article)
         }
     }
 
     fun getSavedNews(): LiveData<List<Article>> {
+        db.document("users/${uidFirebase()}")
+            .collection("articles")
+            .get()
+            .addOnSuccessListener {result->
+                viewModelScope.launch {
+                    newsRepository.nukeAllArticles()
+                    for (document in result) {
+                        val articleFromGod = fromMapGetArticle(document.data, document.id)
+                        addToSaved(articleFromGod)
+                        Log.d("Randi", articleFromGod.toString())
+                    }
+                }
+            }
+            .addOnFailureListener{
+                OnFailureListener {
+                    Log.d("Randi", "We Fucked Up")
+                }
+            }
         return newsRepository.getSavedArticles().asLiveData()
     }
 
-    fun deleteSavedNews(article: Article){
+    fun deleteSavedNews(article: Article) {
         viewModelScope.launch {
             newsRepository.deleteSavedNews(article)
         }
     }
 
-    class Factory (
+    class Factory(
         val application: Application
-    ): ViewModelProvider.Factory {
+    ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(NewsViewModel::class.java)){
+            if (modelClass.isAssignableFrom(NewsViewModel::class.java)) {
                 return NewsViewModel(application) as T
             }
             throw IllegalArgumentException("Unable to construct viewmodel")

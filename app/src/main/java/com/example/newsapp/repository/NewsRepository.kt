@@ -27,4 +27,8 @@ class NewsRepository(
     suspend fun deleteSavedNews(article: Article){
         db.getArticleDao().deleteArticle(article)
     }
+
+    suspend fun nukeAllArticles(){
+        db.getArticleDao().nukeTable()
+    }
 }

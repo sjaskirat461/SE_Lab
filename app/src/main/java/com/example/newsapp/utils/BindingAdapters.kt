@@ -14,7 +14,7 @@ fun setImageUrl(imageView: ImageView, url:String?){
         val imageUri = url.toUri().buildUpon().scheme("https").build()
 
         imageView.load(imageUri) {
-            Log.d("Bhosda","Started Binding")
+//            Log.d("Bhosda","Started Binding")
             crossfade(true)
             placeholder(R.drawable.ic_loading_icon)
             error(R.drawable.ic_error_icon)

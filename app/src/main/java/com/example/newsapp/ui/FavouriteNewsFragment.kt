@@ -42,12 +42,14 @@ class FavouriteNewsFragment : Fragment() {
             },
             {
                 viewModel.deleteSavedNews(it)
-            }
+            },
+            this@FavouriteNewsFragment.requireContext(),
+            2
         )
 
         binding.rvFavNews.adapter = adapter
         viewModel.getSavedNews().observe(viewLifecycleOwner){
-            adapter.submitList(it)
+            adapter.differ.submitList(it)
         }
     }
 

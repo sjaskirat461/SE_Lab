@@ -16,9 +16,12 @@ interface ArticleDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(article: Article): Long
 
-    @Query("SELECT * FROM article ORDER BY publishedAt")
+    @Query("SELECT * FROM article ORDER BY publishedAt DESC")
     fun getAllArticles(): Flow<List<Article>>
 
     @Delete
     suspend fun deleteArticle(article: Article)
+
+    @Query("DELETE from article")
+    suspend fun nukeTable()
 }

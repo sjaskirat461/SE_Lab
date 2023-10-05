@@ -17,3 +17,18 @@ data class Article(
     @Json(name = "url") val url: String,
     @Json(name = "urlToImage") val urlToImage: String
 )
+
+fun fromMapGetArticle(srcMap: Map<String, Any>, docId: String): Article {
+    return Article(
+        id = srcMap["id"] as Int?,
+        author = srcMap["author"] as String,
+        content = srcMap["content"] as String,
+        description = srcMap["description"] as String,
+        publishedAt = srcMap["publishedAt"] as String,
+        source = Source(id = docId, name = (srcMap["source"] as HashMap<*, *>) ["name"] as String),
+        title = srcMap["title"] as String,
+        url = srcMap["url"] as String,
+        urlToImage = srcMap["urlToImage"] as String,
+    )
+}
+

@@ -5,6 +5,7 @@
     <color name="colorPrimary">#0D9A9A</color>
     <color name="colorPrimaryDark">#064949</color>
     <color name="colorPrimaryVariant">#1D7777</color>
-
-
+    <color name="layoverGreen">#AA047C00</color>
+    <color name="layoverRed">#ABD3014D</color>
+    <color name="transparent">#00000000</color>
 </resources>
