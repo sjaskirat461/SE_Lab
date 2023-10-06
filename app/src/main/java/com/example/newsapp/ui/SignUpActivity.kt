@@ -17,6 +17,7 @@ class SignUpActivity : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(R.style.AppTheme)
         _binding = DataBindingUtil.setContentView(
             this@SignUpActivity,
             R.layout.activity_sign_up

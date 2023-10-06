@@ -100,21 +100,23 @@ class NewsViewModel(
             .add(article)
             .addOnSuccessListener {
                 viewModelScope.launch {
+                    val arta = Article(
+                        id = article.id,
+                        author = article.author,
+                        content = article.content,
+                        description = article.description,
+                        publishedAt = article.publishedAt,
+                        source = Source(
+                            id = it.id,
+                            name = article.source.name
+                        ),
+                        title = article.title,
+                        url = article.url,
+                        urlToImage = article.urlToImage,
+                    )
+                    Log.d("Randi", arta.toString())
                     newsRepository.addToSavedNews(
-                        Article(
-                            id = article.id,
-                            author = article.author,
-                            content = article.content,
-                            description = article.description,
-                            publishedAt = article.publishedAt,
-                            source = Source(
-                                id = it.id,
-                                name = article.source.name
-                            ),
-                            title = article.title,
-                            url = article.url,
-                            urlToImage = article.urlToImage,
-                        )
+                        arta
                     )
                 }
                 OnSuccessListener<DocumentReference> { Log.d("Randi", "Added Successfully") }
@@ -122,10 +124,6 @@ class NewsViewModel(
             .addOnFailureListener{
                 OnFailureListener { Log.d("Randi", "We Fucked Up") }
             }
-
-        viewModelScope.launch {
-            newsRepository.addToSavedNews(article)
-        }
     }
 
     fun getSavedNews(): LiveData<List<Article>> {
@@ -137,8 +135,8 @@ class NewsViewModel(
                     newsRepository.nukeAllArticles()
                     for (document in result) {
                         val articleFromGod = fromMapGetArticle(document.data, document.id)
-                        addToSaved(articleFromGod)
-                        Log.d("Randi", articleFromGod.toString())
+                        newsRepository.addToSavedNews(articleFromGod)
+//                        Log.d("Randi", articleFromGod.toString())
                     }
                 }
             }
@@ -151,9 +149,19 @@ class NewsViewModel(
     }
 
     fun deleteSavedNews(article: Article) {
-        viewModelScope.launch {
-            newsRepository.deleteSavedNews(article)
-        }
+        db.document("users/${uidFirebase()}")
+            .collection("articles")
+            .document(article.source.id)
+            .delete()
+            .addOnSuccessListener {
+                viewModelScope.launch {
+                    Log.d("Randi","Deleting $article")
+                    newsRepository.deleteSavedNews(article)
+                }
+            }
+            .addOnFailureListener{
+                Log.d("Randi","We Fucked Up")
+            }
     }
 
     class Factory(

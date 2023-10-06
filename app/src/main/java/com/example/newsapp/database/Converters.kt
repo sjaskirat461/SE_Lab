@@ -6,10 +6,11 @@ import com.example.newsapp.data.Source
 class Converters {
     @TypeConverter
     fun fromSource(source: Source): String{
-        return source.name
+        return source.id + " " + source.name
     }
     @TypeConverter
     fun toSource(name: String) : Source{
-        return Source(name,name)
+        val x = name.split(" ")
+        return Source(x[0],x[1])
     }
 }

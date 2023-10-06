@@ -7,5 +7,5 @@
     <color name="colorPrimaryVariant">#1D7777</color>
     <color name="layoverGreen">#AA047C00</color>
     <color name="layoverRed">#ABD3014D</color>
-    <color name="transparent">#00000000</color>
+    <color name="splashColor">#AE9D07</color>
 </resources>

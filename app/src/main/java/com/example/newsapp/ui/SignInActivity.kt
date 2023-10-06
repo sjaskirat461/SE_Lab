@@ -19,6 +19,7 @@ class SignInActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(R.style.AppTheme)
         Log.d("Bhosda", "In activity")
         _binding = DataBindingUtil.setContentView(this@SignInActivity, R.layout.activity_sign_in)
         Log.d("Bhosda", "Post bind")
@@ -61,6 +62,7 @@ class SignInActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        Log.d("Bhosda", application.theme.toString())
         if(firebaseAuth.currentUser!=null){
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)

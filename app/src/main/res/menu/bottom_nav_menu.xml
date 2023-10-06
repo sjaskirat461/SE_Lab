@@ -5,10 +5,10 @@
         android:title="@string/breaking_news"
         android:icon="@drawable/ic_menu_breaking_news"
         />
-    <item android:id="@+id/searchFragment"
-        android:title="@string/search"
-        android:icon="@drawable/ic_menu_search"
-        />
+<!--    <item android:id="@+id/searchFragment"-->
+<!--        android:title="@string/search"-->
+<!--        android:icon="@drawable/ic_menu_search"-->
+<!--        />-->
     <item android:id="@+id/favouriteNewsFragment"
         android:title="@string/favourites"
         android:icon="@drawable/ic_menu_favourite"

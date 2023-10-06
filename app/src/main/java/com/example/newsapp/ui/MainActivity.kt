@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(R.style.AppTheme)
         _binding = DataBindingUtil.setContentView(this@MainActivity, R.layout.activity_main)
         binding.bottomNavigationView.background = null
         val navHostFragment = supportFragmentManager

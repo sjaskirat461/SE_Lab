@@ -4,11 +4,16 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
-    </style>
+<!--    </style>-->
 
-    <style name="AppTheme.NoActionBar">
+<!--    <style name="AppTheme.NoActionBar">-->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+    
+    <style name="splashScreenTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_image</item>
+        <item name="android:statusBarColor">#AE9D07</item>
     </style>
 </resources>
